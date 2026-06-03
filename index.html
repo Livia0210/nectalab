@@ -985,10 +985,24 @@ async function saveCard() {
       logging: false
     });
 
-    const link = document.createElement('a');
-    link.download = `missao-biometano-${playerName.replace(/\s+/g,'-')}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+const imageData = canvas.toDataURL("image/png");
+
+const response = await fetch(imageData);
+
+const blob = await response.blob();
+
+const file = new File(
+  [blob],
+  "card-necta.png",
+  { type: "image/png" }
+);
+
+if (navigator.canShare && navigator.canShare({ files: [file] })) {
+  await navigator.share({
+    title: "Meu Card Necta",
+    files: [file]
+  });
+}
 
     btn.textContent = '✅ Card salvo!';
     btn.style.background = '#026B5A';
